@@ -1,4 +1,4 @@
-# Copyright 2023 The Kubric Authors.
+# Copyright 2024 The Kubric Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 from absl.flags import argparse_flags
 
 import collections
@@ -27,7 +28,7 @@ import tempfile
 from etils import epath
 import numpy as np
 
-from kubric import core
+from kubric.core import scene as kubric_scene
 from kubric import file_io
 
 logger = logging.getLogger(__name__)
@@ -94,7 +95,7 @@ def setup(flags):
 
   seed = flags.seed if flags.seed else np.random.randint(0, 2147483647)
   rng = np.random.RandomState(seed=seed)
-  scene = core.scene.Scene.from_flags(flags)
+  scene = kubric_scene.Scene.from_flags(flags)
   scene.metadata["seed"] = seed
 
   scratch_dir, output_dir = setup_directories(flags)

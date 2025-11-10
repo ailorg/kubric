@@ -1,4 +1,4 @@
-# Copyright 2023 The Kubric Authors.
+# Copyright 2024 The Kubric Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """Kubric objects."""
 
 import itertools
@@ -277,5 +278,34 @@ class FileBasedObject(PhysicalObject):
   simulation_filename = tl.Unicode(allow_none=True)
   render_filename = tl.Unicode(allow_none=True)
   render_import_kwargs = tl.Dict(key_trait=tl.ObjectName())
+
+  # If true, applies the transform to all loaded nodes after loading the GLB.
+  # This makes loading GLB files reproduce the expected workflow of Blender in
+  # UI, minus a 90 degree X-axis rotation applied after loading.
+  glb_do_transform_apply_after_import = tl.Bool(False)
+
+  # If true, uses a parenting approach instead of a join so that the asset
+  # represents a top-level Empty node in the scene. All existing objects
+  # without parents will be parented to this object. Any transform applied to
+  # this object will be applied to all children. For more details, see
+  # https://docs.blender.org/manual/en/latest/scene_layout/object/editing/parent.html
+  #
+  # Parenting avoids destroying things like animations and can preven
+  # accidental deletion of objects from the scene.
+  #
+  # This will break certain features of kubric like assigning meterials to
+  # assets or other functions that expect the asset to be a mesh. For
+  # example, when assigning segmentation_ids you may want to reconstruct
+  # kb.Asset recursively on the top-level empty and set the `segmentation_id`.
+  # Also when used with PyBullet for simulations, the non-animated collision
+  # mesh is used which can lead to unexpected behavior when an animated object
+  # is used in a physics simulation.
+  use_parenting_instead_of_join = tl.Bool(False)
+
+  # By default, the objects are rotated by 90 degrees around the X axis after
+  # loading. This is to reproduce the behavior of Blender UI. If this is set to
+  # True, the object will not be rotated by 90 degrees around the X axis after
+  # loading.
+  do_not_rotate_glb_90_degrees_after_import = tl.Bool(False)
 
   # TODO: trigger error when changing filenames or asset-id after the fact
