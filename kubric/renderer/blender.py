@@ -632,6 +632,7 @@ class Blender(core.View):
     obj.observe(AttributeSetter(bsdf_node.inputs["Metallic"], "default_value"), "metallic")
     obj.observe(KeyframeSetter(bsdf_node.inputs["Metallic"], "default_value"), "metallic",
                 type="keyframe")
+    print(bsdf_node.inputs.keys())
     obj.observe(AttributeSetter(bsdf_node.inputs["Specular"], "default_value"), "specular")
     obj.observe(KeyframeSetter(bsdf_node.inputs["Specular"], "default_value"), "specular",
                 type="keyframe")
